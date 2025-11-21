@@ -1,0 +1,278 @@
+{
+    "info": {
+        "_postman_id": "lendsqr-assessment-collection",
+        "name": "Lendsqr Assessment API",
+        "description": "Collection for Lendsqr Backend Assessment API including Auth and Wallet endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"username\": \"testuser\",\n    \"password\": \"Password123!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user. Checks Karma blacklist first."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.environment.set(\"accessToken\", jsonData.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"Password123!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login to get access token. Token is saved to environment variable `accessToken`."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/auth/refresh",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refresh access token using cookie."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout user and clear cookies."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Wallet",
+            "item": [
+                {
+                    "name": "Fund Wallet",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 5000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/wallet/fund",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet",
+                                "fund"
+                            ]
+                        },
+                        "description": "Fund the authenticated user's wallet."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transfer Funds",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 1000,\n    \"recipientUserId\": \"REPLACE_WITH_RECIPIENT_ID\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/wallet/transfer",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet",
+                                "transfer"
+                            ]
+                        },
+                        "description": "Transfer funds to another user. Requires `recipientUserId`."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Withdraw Funds",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 500\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/wallet/withdraw",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet",
+                                "withdraw"
+                            ]
+                        },
+                        "description": "Withdraw funds from wallet."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Transactions",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/wallet/transactions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet",
+                                "transactions"
+                            ]
+                        },
+                        "description": "Get list of transactions for the authenticated user."
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}
