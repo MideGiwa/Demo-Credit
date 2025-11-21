@@ -26,24 +26,24 @@ describe("auth routes", () => {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    // await db.destroy();
   });
 
   it("POST /auth/register creates a new user when data is valid", async () => {
     const res = await request(app)
       .post("/auth/register")
       .send({
-        email: "newuser@example.com",
-        username: "newuser",
+        email: "auth_register_user@example.com",
+        username: "auth_register_user",
         password: "valid-password",
       });
 
     expect(res.status).toBe(201);
 
     // Verify user in DB
-    const user = await db(USERS_TABLE).where({ email: "newuser@example.com" }).first();
+    const user = await db(USERS_TABLE).where({ email: "auth_register_user@example.com" }).first();
     expect(user).toBeDefined();
-    expect(user.username).toBe("newuser");
+    expect(user.username).toBe("auth_register_user");
   });
 
   it("POST /auth/register returns 400 when required fields are missing", async () => {
@@ -56,14 +56,14 @@ describe("auth routes", () => {
     await request(app)
       .post("/auth/register")
       .send({
-        email: "user@example.com",
-        username: "user",
+        email: "auth_login_user@example.com",
+        username: "auth_login_user",
         password: "valid-password",
       });
 
     const res = await request(app)
       .post("/auth/login")
-      .send({ email: "user@example.com", password: "valid-password" });
+      .send({ email: "auth_login_user@example.com", password: "valid-password" });
 
     expect(res.status).toBe(200);
     expect(res.body.accessToken).toBeDefined();
