@@ -57,7 +57,9 @@ describe("wallet routes", () => {
     await db(WALLETS_TABLE).insert({
       id: uuidv4(),
       user_id: TEST_USER_ID,
-      balance: 0,
+      available_balance: 0,
+      ledger_balance: 0,
+      loan_balance: 0,
       currency: "NGN",
     });
   });
@@ -76,7 +78,7 @@ describe("wallet routes", () => {
 
     // Verify in DB
     const wallet = await db(WALLETS_TABLE).where({ user_id: TEST_USER_ID }).first();
-    expect(wallet.balance).toBe(1000);
+    expect(wallet.available_balance).toBe(1000);
   });
 
   it("POST /wallet/transfer requires recipient", async () => {
@@ -104,7 +106,9 @@ describe("wallet routes", () => {
     await db(WALLETS_TABLE).insert({
       id: uuidv4(),
       user_id: RECIPIENT_ID,
-      balance: 0,
+      available_balance: 0,
+      ledger_balance: 0,
+      loan_balance: 0,
       currency: "NGN",
     });
 
@@ -118,8 +122,8 @@ describe("wallet routes", () => {
     const senderWallet = await db(WALLETS_TABLE).where({ user_id: TEST_USER_ID }).first();
     const recipientWallet = await db(WALLETS_TABLE).where({ user_id: RECIPIENT_ID }).first();
 
-    expect(senderWallet.balance).toBe(500);
-    expect(recipientWallet.balance).toBe(500);
+    expect(senderWallet.available_balance).toBe(500);
+    expect(recipientWallet.available_balance).toBe(500);
   });
 
   it("POST /wallet/withdraw decreases balance", async () => {
@@ -133,7 +137,7 @@ describe("wallet routes", () => {
     expect(res.status).toBe(200);
 
     const wallet = await db(WALLETS_TABLE).where({ user_id: TEST_USER_ID }).first();
-    expect(wallet.balance).toBe(900);
+    expect(wallet.available_balance).toBe(900);
   });
 
   it("GET /wallet/transactions returns transactions list", async () => {
