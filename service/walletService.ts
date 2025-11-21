@@ -229,8 +229,8 @@ export async function transferFunds(options: TransferOptions) {
       type: "TRANSFER_OUT",
       amount,
       currency,
-      reference,
-      metadata: options.metadata,
+      reference: `${reference}-OUT`,
+      metadata: { ...options.metadata, transfer_reference: reference },
     });
 
     await insertTransaction(trx, {
@@ -238,8 +238,8 @@ export async function transferFunds(options: TransferOptions) {
       type: "TRANSFER_IN",
       amount,
       currency,
-      reference,
-      metadata: options.metadata,
+      reference: `${reference}-IN`,
+      metadata: { ...options.metadata, transfer_reference: reference },
     });
 
     return {

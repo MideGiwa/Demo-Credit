@@ -5,7 +5,7 @@ import { checkKarmaBlacklist } from "../middleware/karmaMiddleware";
 
 const router = Router();
 
-router.post("/register", checkKarmaBlacklist, register);
+router.post("/register", register);
 router.post("/login", login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
