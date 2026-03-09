@@ -1,7 +1,6 @@
-import fs from "fs";
+import winston from "winston";
 import path from "path";
-
-type LogLevel = "error" | "warn" | "info" | "debug";
+import fs from "fs";
 
 const LOG_DIR = path.join(process.cwd(), "logs");
 
@@ -9,46 +8,35 @@ if (!fs.existsSync(LOG_DIR)) {
   fs.mkdirSync(LOG_DIR, { recursive: true });
 }
 
-function formatLog(level: LogLevel, message: string, meta?: any): string {
-  const timestamp = new Date().toISOString();
-  const base = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
-  if (!meta) return base;
-  return `${base} | ${JSON.stringify(meta)}`;
+export const logger = winston.createLogger({
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
+  ),
+  defaultMeta: { service: "demo-credit" },
+  transports: [
+    new winston.transports.File({
+      filename: path.join(LOG_DIR, "error.log"),
+      level: "error",
+    }),
+    new winston.transports.File({
+      filename: path.join(LOG_DIR, "app.log"),
+    }),
+  ],
+});
+
+if (process.env.NODE_ENV !== "production") {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
+          const metaString = Object.keys(meta).length ? JSON.stringify(meta) : "";
+          return `[${timestamp}] ${level}: ${message} ${metaString} ${stack || ""}`;
+        })
+      ),
+    })
+  );
 }
-
-function writeToFile(filename: string, line: string) {
-  const filePath = path.join(LOG_DIR, filename);
-  fs.appendFile(filePath, line + "\n", (err) => {
-    if (err) {
-      // eslint-disable-next-line no-console
-      console.error("Failed to write log file", err);
-    }
-  });
-}
-
-export const logger = {
-  error(message: string, meta?: any) {
-    const line = formatLog("error", message, meta);
-    console.error(line);
-    writeToFile("error.log", line);
-  },
-  warn(message: string, meta?: any) {
-    const line = formatLog("warn", message, meta);
-    console.warn(line);
-    writeToFile("app.log", line);
-  },
-  info(message: string, meta?: any) {
-    const line = formatLog("info", message, meta);
-    console.log(line);
-    writeToFile("app.log", line);
-  },
-  debug(message: string, meta?: any) {
-    if (process.env.NODE_ENV !== "production") {
-      const line = formatLog("debug", message, meta);
-      console.debug(line);
-      writeToFile("app.log", line);
-    }
-  },
-};
-
-
