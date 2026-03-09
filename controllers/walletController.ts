@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
+import { ApiRequest, sendResponse } from "../models/api";
 import { fundWallet, transferFunds, withdrawFunds, listWalletTransactions } from "../service/walletService";
 import { BadRequestError, NotFoundError } from "../errors/HttpError";
 import { db } from "../config/knex";
@@ -18,7 +19,7 @@ async function resolveRecipientUserId(body: any): Promise<string> {
   throw new BadRequestError("recipientUserId or recipientEmail is required");
 }
 
-export async function fundWalletHandler(req: Request, res: Response, next: NextFunction) {
+export async function fundWalletHandler(req: ApiRequest, res: Response, next: NextFunction) {
   try {
     if (!req.user) {
       throw new BadRequestError("User context is missing");
@@ -38,7 +39,7 @@ export async function fundWalletHandler(req: Request, res: Response, next: NextF
   }
 }
 
-export async function transferFundsHandler(req: Request, res: Response, next: NextFunction) {
+export async function transferFundsHandler(req: ApiRequest, res: Response, next: NextFunction) {
   try {
     if (!req.user) {
       throw new BadRequestError("User context is missing");
@@ -59,7 +60,7 @@ export async function transferFundsHandler(req: Request, res: Response, next: Ne
   }
 }
 
-export async function withdrawFundsHandler(req: Request, res: Response, next: NextFunction) {
+export async function withdrawFundsHandler(req: ApiRequest, res: Response, next: NextFunction) {
   try {
     if (!req.user) {
       throw new BadRequestError("User context is missing");
@@ -78,7 +79,7 @@ export async function withdrawFundsHandler(req: Request, res: Response, next: Ne
   }
 }
 
-export async function listTransactionsHandler(req: Request, res: Response, next: NextFunction) {
+export async function listTransactionsHandler(req: ApiRequest, res: Response, next: NextFunction) {
   try {
     if (!req.user) {
       throw new BadRequestError("User context is missing");

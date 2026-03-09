@@ -1,4 +1,5 @@
 import express from "express";
+import { sendResponse } from "./models/api";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
@@ -24,13 +25,11 @@ app.use("/auth", authRouter);
 app.use("/wallet", walletRouter);
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+  sendResponse(res, 200, "ok");
 });
 
 app.get("/", (_req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Demo Credit API is running",
+  sendResponse(res, 200, "Demo Credit API is running", {
     service: "demo-credit-backend",
   });
 });

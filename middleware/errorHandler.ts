@@ -20,13 +20,11 @@ export function errorHandler(
     stack: process.env.NODE_ENV !== "production" ? err.stack : undefined,
   });
 
-  const payload: any = {
-    error: isHttpError ? err.message : "Internal server error",
+  const payload = {
+    code: status,
+    message: isHttpError ? err.message : "Internal server error",
+    data: isHttpError && err.details ? { details: err.details } : undefined,
   };
-
-  if (isHttpError && err.details) {
-    payload.details = err.details;
-  }
 
   res.status(status).json(payload);
 }

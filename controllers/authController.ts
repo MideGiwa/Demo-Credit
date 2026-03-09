@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
+import { ApiRequest, sendResponse } from "../models/api";
 import {
   registerUser,
   loginUser,
@@ -7,20 +8,20 @@ import {
 } from "../service/authService";
 
 export async function register(
-  req: Request,
+  req: ApiRequest,
   res: Response,
   next: NextFunction
 ) {
   try {
     const result = await registerUser(req.body);
-    res.status(201).json(result);
+    sendResponse(res, 201, "User registered successfully", result);
   } catch (err) {
     next(err);
   }
 }
 
 export async function login(
-  req: Request,
+  req: ApiRequest,
   res: Response,
   next: NextFunction
 ) {
@@ -35,21 +36,20 @@ export async function login(
       ipAddress
     );
 
-    res
-      .cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        expires: refreshExpires,
-      })
-      .json({ accessToken });
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: refreshExpires,
+    });
+    sendResponse(res, 200, "Login successful", { accessToken });
   } catch (err) {
     next(err);
   }
 }
 
 export async function refresh(
-  req: Request,
+  req: ApiRequest,
   res: Response,
   next: NextFunction
 ) {
@@ -58,14 +58,14 @@ export async function refresh(
       (req.cookies && req.cookies.refresh_token) || req.body.refresh_token;
 
     const result = await refreshUserToken(token);
-    res.json(result);
+    sendResponse(res, 200, "Token refreshed successfully", result);
   } catch (err) {
     next(err);
   }
 }
 
 export async function logout(
-  req: Request,
+  req: ApiRequest,
   res: Response,
   next: NextFunction
 ) {
@@ -75,7 +75,8 @@ export async function logout(
 
     await revokeUserToken(token);
 
-    res.clearCookie("refresh_token").status(204).send();
+    res.clearCookie("refresh_token");
+    sendResponse(res, 200, "Logout successful");
   } catch (err) {
     next(err);
   }
