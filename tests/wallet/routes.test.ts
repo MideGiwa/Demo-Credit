@@ -93,7 +93,7 @@ describe("wallet routes", () => {
       .send({ amount: 1000 });
 
     expect(res.status).toBe(200);
-    expect(res.body.available_balance).toBe(1000);
+    expect(res.body.data.available_balance).toBe(1000);
 
     // Verify in DB
     const wallets = await db(WALLETS_TABLE).select("*");
@@ -187,9 +187,9 @@ describe("wallet routes", () => {
 
     const res = await request(app).get("/wallet/transactions");
     expect(res.status).toBe(200);
-    expect(res.body.transactions).toHaveLength(1);
-    expect(res.body.transactions[0].type).toBe("FUND");
-    expect(res.body.transactions[0].amount).toBe(1000);
+    expect(res.body.data.transactions).toHaveLength(1);
+    expect(res.body.data.transactions[0].type).toBe("FUND");
+    expect(res.body.data.transactions[0].amount).toBe(1000);
   });
 });
 

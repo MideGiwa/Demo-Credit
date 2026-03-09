@@ -66,7 +66,7 @@ describe("auth routes", () => {
       .send({ email: "auth_login_user@example.com", password: "valid-password" });
 
     expect(res.status).toBe(200);
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.data.accessToken).toBeDefined();
     expect(res.headers["set-cookie"]).toBeDefined();
   });
 
