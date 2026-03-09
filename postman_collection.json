@@ -45,8 +45,8 @@
                             "script": {
                                 "exec": [
                                     "var jsonData = pm.response.json();",
-                                    "if (jsonData.accessToken) {",
-                                    "    pm.environment.set(\"accessToken\", jsonData.accessToken);",
+                                    "if (jsonData.data && jsonData.data.accessToken) {",
+                                    "    pm.environment.set(\"accessToken\", jsonData.data.accessToken);",
                                     "}"
                                 ],
                                 "type": "text/javascript"

@@ -112,9 +112,13 @@ Content-Type: application/json
 **Response**: `201 Created`
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "username": "johndoe"
+  "code": 201,
+  "message": "User registered successfully",
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "johndoe"
+  }
 }
 ```
 
@@ -132,7 +136,11 @@ Content-Type: application/json
 **Response**: `200 OK`
 ```json
 {
-  "accessToken": "eyJhbGc..."
+  "code": 200,
+  "message": "Login successful",
+  "data": {
+    "accessToken": "eyJhbGc..."
+  }
 }
 ```
 *Sets HTTP-only `refresh_token` cookie*
@@ -146,7 +154,11 @@ Cookie: refresh_token=...
 **Response**: `200 OK`
 ```json
 {
-  "accessToken": "eyJhbGc..."
+  "code": 200,
+  "message": "Token refreshed successfully",
+  "data": {
+    "accessToken": "eyJhbGc..."
+  }
 }
 ```
 
@@ -179,9 +191,13 @@ Content-Type: application/json
 **Response**: `200 OK`
 ```json
 {
-  "available_balance": 10000,
-  "ledger_balance": 10000,
-  "loan_balance": 0
+  "code": 200,
+  "message": "Wallet funded successfully",
+  "data": {
+    "available_balance": 10000,
+    "ledger_balance": 10000,
+    "loan_balance": 0
+  }
 }
 ```
 
@@ -203,13 +219,17 @@ Content-Type: application/json
 **Response**: `200 OK`
 ```json
 {
-  "sender": {
-    "available_balance": 5000,
-    "ledger_balance": 5000
-  },
-  "recipient": {
-    "available_balance": 5000,
-    "ledger_balance": 5000
+  "code": 200,
+  "message": "Transfer successful",
+  "data": {
+    "sender": {
+      "available_balance": 5000,
+      "ledger_balance": 5000
+    },
+    "recipient": {
+      "available_balance": 5000,
+      "ledger_balance": 5000
+    }
   }
 }
 ```
@@ -229,8 +249,12 @@ Content-Type: application/json
 **Response**: `200 OK`
 ```json
 {
-  "available_balance": 3000,
-  "ledger_balance": 3000
+  "code": 200,
+  "message": "Withdrawal successful",
+  "data": {
+    "available_balance": 3000,
+    "ledger_balance": 3000
+  }
 }
 ```
 
@@ -243,17 +267,22 @@ Authorization: Bearer <accessToken>
 **Response**: `200 OK`
 ```json
 {
-  "transactions": [
-    {
-      "id": "uuid",
-      "type": "FUND",
-      "amount": 10000,
-      "currency": "NGN",
-      "status": "COMPLETED",
-      "reference": "ref-123",
-      "created_at": "2025-11-21T12:00:00Z"
-    }
-  ]
+  "code": 200,
+  "message": "Transactions fetched successfully",
+  "data": {
+    "transactions": [
+      {
+        "id": "uuid",
+        "type": "FUND",
+        "amount": 10000,
+        "currency": "NGN",
+        "status": "COMPLETED",
+        "reference": "ref-123",
+        "metadata": null,
+        "created_at": "2025-11-21T12:00:00Z"
+      }
+    ]
+  }
 }
 ```
 
